@@ -1,8 +1,8 @@
-package com.example.calenderproject.repository;
+package calenderproject.repository;
 
-import com.example.calenderproject.dto.CalenderRequestDto;
-import com.example.calenderproject.dto.CalenderResponseDto;
-import com.example.calenderproject.entity.Calender;
+import calenderproject.dto.CalenderRequestDto;
+import calenderproject.dto.CalenderResponseDto;
+import calenderproject.entity.Calender;
 
 import java.util.List;
 

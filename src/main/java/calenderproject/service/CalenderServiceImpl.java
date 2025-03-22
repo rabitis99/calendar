@@ -1,15 +1,15 @@
-package com.example.calenderproject.service;
+package calenderproject.service;
 
-import com.example.calenderproject.dto.CalenderRequestDto;
-import com.example.calenderproject.dto.CalenderResponseDto;
-import com.example.calenderproject.entity.Calender;
-import com.example.calenderproject.repository.CalenderRepository;
+import calenderproject.dto.CalenderRequestDto;
+import calenderproject.dto.CalenderResponseDto;
+import calenderproject.entity.Calender;
+import calenderproject.repository.CalenderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
-public class CalenderServiceImpl implements CalenderService{
+public class CalenderServiceImpl implements CalenderService {
 
     private final CalenderRepository calenderRepository;
 

@@ -1,7 +1,7 @@
-package com.example.calenderproject.service;
+package calenderproject.service;
 
-import com.example.calenderproject.dto.CalenderRequestDto;
-import com.example.calenderproject.dto.CalenderResponseDto;
+import calenderproject.dto.CalenderRequestDto;
+import calenderproject.dto.CalenderResponseDto;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package com.example.calenderproject.entity;
+package calenderproject.entity;
 
-import com.example.calenderproject.dto.CalenderRequestDto;
+import calenderproject.dto.CalenderRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

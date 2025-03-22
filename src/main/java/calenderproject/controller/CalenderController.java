@@ -1,10 +1,8 @@
-package com.example.calenderproject.controller;
+package calenderproject.controller;
 
-import com.example.calenderproject.dto.CalenderRequestDto;
-import com.example.calenderproject.dto.CalenderResponseDto;
-import com.example.calenderproject.entity.Calender;
-import com.example.calenderproject.service.CalenderService;
-
+import calenderproject.dto.CalenderRequestDto;
+import calenderproject.dto.CalenderResponseDto;
+import calenderproject.service.CalenderService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
