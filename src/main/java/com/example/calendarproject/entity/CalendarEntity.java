@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Table;
 
 /**
  * 일정 엔티티
@@ -15,7 +17,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Calendar {
-
     private int id;
     private String revisedDate;
     private String name;
@@ -28,20 +29,8 @@ public class Calendar {
      */
     public Calendar(CalendarRequestDto requestDto) {
         this.name = requestDto.getName();
-        this.date = requestDto.getDate();
-        this.revisedDate = requestDto.getRevisedDate();
         this.password = requestDto.getPassword();
         this.contents = requestDto.getContents();
     }
 
-    /**
-     * DTO를 기반으로 기존 Calendar 객체 업데이트
-     */
-    public void updateFromRequestDto(CalendarRequestDto requestDto) {
-        this.name = requestDto.getName();
-        this.date = requestDto.getDate();
-        this.revisedDate = requestDto.getRevisedDate();
-        this.password = requestDto.getPassword();
-        this.contents = requestDto.getContents();
-    }
 }

@@ -3,16 +3,13 @@ package com.example.calendarproject.entity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-public class User {
-    String name;
-    String email;
-    String revisedDate;
-    String date;
+
+public class Page {
+    int id;
+    int totalPage;
 
 }
