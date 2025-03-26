@@ -1,7 +1,9 @@
 package com.example.calendarproject.dto;
 
-import com.example.calendarproject.entity.Calendar;
+import com.example.calendarproject.entity.CalendarEntity;
 import lombok.Getter;
+
+import java.util.List;
 
 /**
  * 일정 응답 DTO
@@ -9,30 +11,21 @@ import lombok.Getter;
  */
 @Getter
 public class CalendarResponseDto {
-    private int id;
-    private String name;
-    private String date;
-    private String revisedDate;
-    private String contents;
+    private final long id;//primary key
+    private final String task;//할일
+    private final String name;//작성자명
+    private final String updatedAt;//작성일
+    private final String createdAt;//수정일
 
     /**
      * 엔티티를 기반으로 DTO 생성
      */
-    public CalendarResponseDto(Calendar calendar) {
+    public CalendarResponseDto(CalendarEntity calendar) {
         this.id = calendar.getId();
         this.name = calendar.getName();
-        this.date = calendar.getDate();
-        this.revisedDate = calendar.getRevisedDate();
-        this.contents = calendar.getContents();
+        this.updatedAt= calendar.getUpdatedAt();
+        this.createdAt = calendar.getCreatedAt();
+        this.task = calendar.getTask();
     }
 
-    /**
-     * 특정 값들을 기반으로 DTO 생성
-     */
-    public CalendarResponseDto(int id, String name, String contents, String date) {
-        this.id = id;
-        this.name = name;
-        this.date = date;
-        this.contents = contents;
-    }
 }

@@ -1,4 +1,9 @@
 package com.example.calendarproject.service;
 
-public class PageService {
+import com.example.calendarproject.dto.PageResponseDto;
+
+
+public interface PageService {
+    PageResponseDto getPages(int pageNum,int pageSize);
+
 }

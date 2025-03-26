@@ -1,13 +1,12 @@
 package com.example.calendarproject.repository;
 
-import com.example.calendarproject.dto.CalendarRequestDto;
-import com.example.calendarproject.dto.CalendarResponseDto;
-import com.example.calendarproject.entity.Calendar;
+import com.example.calendarproject.entity.CalendarEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
 import java.util.*;
 
 @Repository
@@ -20,30 +19,31 @@ public class CalendarRepositoryImpl implements CalendarRepository {
     }
 
     @Override
-    public CalendarResponseDto createCalendar(Calendar calendar) {
+    public CalendarEntity createCalendar(CalendarEntity calendar) {
         SimpleJdbcInsert jdbcInsert = new SimpleJdbcInsert(jdbcTemplate);
         jdbcInsert.withTableName("calendar").usingGeneratedKeyColumns("id");
 
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("name", calendar.getName());
-        parameters.put("contents", calendar.getContents());
-        parameters.put("date", calendar.getDate());
+        parameters.put("task", calendar.getTask());
+        parameters.put("created_at", calendar.getCreatedAt());
         parameters.put("password", calendar.getPassword());
+        parameters.put("user_id",calendar.getUserId());
 
         Number key = jdbcInsert.executeAndReturnKey(new MapSqlParameterSource(parameters));
         calendar.setId(key.intValue());
-        return new CalendarResponseDto(calendar);
+        return calendar;
     }
 
     @Override
-    public List<CalendarResponseDto> findAllCalendars() {
-        return jdbcTemplate.query("SELECT id, name, contents, date FROM calendar", calendarRowMapper());
+    public List<CalendarEntity> findAllCalendars() {
+        return jdbcTemplate.query("SELECT * FROM calendar", calendarRowMapper());
     }
 
     @Override
-    public Optional<CalendarResponseDto> findCalendarByName(String name) {
-        List<CalendarResponseDto> result = jdbcTemplate.query(
-                "SELECT id, name, contents, date FROM calendar WHERE name = ?",
+    public Optional<CalendarEntity> findCalendarByName(String name) {
+        List<CalendarEntity> result = jdbcTemplate.query(
+                "SELECT * FROM calendar WHERE name = ?",
                 calendarRowMapper(),
                 name
         );
@@ -51,48 +51,71 @@ public class CalendarRepositoryImpl implements CalendarRepository {
     }
 
     @Override
-    public boolean updateCalendar(CalendarRequestDto calendarRequestDto) {
-        String name = calendarRequestDto.getName();
-        String contents = calendarRequestDto.getContents();
-        String password = calendarRequestDto.getPassword();
-        String revisedDate =calendarRequestDto.getRevisedDate();
-        System.out.println("revisedDate = " + revisedDate);
+    public boolean updateCalendar(CalendarEntity calendar, String email) {
+        String name = calendar.getName();
+        String contents = calendar.getTask();
+        String password = calendar.getPassword();
+        String revisedDate = calendar.getUpdatedAt();
 
-        Map<String, Object> parameters = new HashMap<>();
-
-        Optional<Calendar> existingCalendar = jdbcTemplate.query(
-                "SELECT password FROM calendar ",
-                calendarPasswordRowMapper()
+        Optional<String> existingPassword = jdbcTemplate.query(
+                "SELECT password FROM calendar WHERE name = ?",
+                (rs, rowNum) -> rs.getString("password"),
+                name
         ).stream().findFirst();
 
-        if (existingCalendar.isPresent() && password.equals(existingCalendar.get().getPassword())) {
-
+        if (existingPassword.isPresent() && password.equals(existingPassword.get())) {
             return jdbcTemplate.update(
-                    "UPDATE calendar SET name = ?, contents = ?,revised_date = ?",
-                    name, contents,revisedDate
+                    "UPDATE calendar inner join user on calendar.name=user.name SET contents = ?, calendar.updated_at = ? WHERE user.email = ?",
+                    contents, revisedDate, email
             ) > 0;
         }
         return false;
     }
 
     @Override
-    public boolean deleteCalendar(int id,CalendarRequestDto calendarRequestDto) {
-        return jdbcTemplate.update("DELETE FROM calendar WHERE name = ?", calendarRequestDto.getName()) > 0;
+    public String deleteCalendar(long id, long userId ) {
+        boolean deleteCalendarBoolean =jdbcTemplate.update("DELETE FROM calendar WHERE id = ? AND userId = ?", id,userId) > 0;
+        if(deleteCalendarBoolean){
+            return "삭제가 됐습니다";
+        }
+        else {
+            return "삭제에 실패했습니다";
+        }
     }
 
-    private RowMapper<CalendarResponseDto> calendarRowMapper() {
-        return (rs, rowNum) -> new CalendarResponseDto(
-                rs.getInt("id"),
-                rs.getString("name"),
-                rs.getString("contents"),
-                rs.getString("date")
-        );
+    @Override
+    public List<CalendarEntity> findCalendarById(long id) {
+        return jdbcTemplate.query("SELECT * FROM calendar where id=?",
+                calendarRowMapper(), id);
+    }
+    @Override
+    public List<Long> checkUserId() {
+
+        return jdbcTemplate.query("SELECT user_id FROM calendar",
+                (rs, rowNum) ->  rs.getLong("user_id"));
+
+    }
+    @Override
+    public List<Long> checkId() {
+        return jdbcTemplate.query("SELECT id FROM calendar",
+                (rs, rowNum) ->  rs.getLong("id"));
     }
 
-    private RowMapper<Calendar> calendarPasswordRowMapper() {
+    @Override
+    public List<CalendarEntity> findCalendarsByUserId(long userId) {
+        return jdbcTemplate.query("SELECT * FROM calendar where user_id=?",
+                calendarRowMapper(),
+                userId);
+    }
+
+    private RowMapper<CalendarEntity> calendarRowMapper() {
         return (rs, rowNum) -> {
-            Calendar calendar = new Calendar();
-            calendar.setPassword(rs.getString("password"));
+            CalendarEntity calendar = new CalendarEntity();
+            calendar.setId(rs.getInt("id"));
+            calendar.setName(rs.getString("name"));
+            calendar.setTask(rs.getString("task"));
+            calendar.setCreatedAt(rs.getString("created_at"));
+            calendar.setUpdatedAt(rs.getString("updated_at"));
             return calendar;
         };
     }

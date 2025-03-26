@@ -2,7 +2,14 @@ package com.example.calendarproject.controller;
 
 import com.example.calendarproject.dto.CalendarRequestDto;
 import com.example.calendarproject.dto.CalendarResponseDto;
+import com.example.calendarproject.entity.CalendarEntity;
 import com.example.calendarproject.service.CalendarService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.PositiveOrZero;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -11,8 +18,10 @@ import java.util.List;
  * 일정(Calender) 관련 CRUD 기능을 제공하는 컨트롤러
  */
 @RestController
-@RequestMapping("/calendar")
-public class CalendarController {
+@RequestMapping("/calendars")
+@Validated
+
+public class CalendarController  {
 
     private final CalendarService calendarService;
 
@@ -20,42 +29,48 @@ public class CalendarController {
         this.calendarService = calendarService;
     }
 
-    /**
-     * 새로운 일정을 생성합니다.
-     * @param calendarRequestDto 일정 생성 요청 DTO
-     * @return 생성된 일정 정보
-     */
     @PostMapping
-    public CalendarResponseDto createCalendar(@RequestBody CalendarRequestDto calendarRequestDto){
-        return calendarService.createCalendar(calendarRequestDto);
+    public ResponseEntity<CalendarResponseDto> createCalendar(@Valid @RequestBody  CalendarRequestDto calendarRequestDto){
+
+        return new ResponseEntity<>(calendarService.createCalendar(calendarRequestDto),HttpStatus.CREATED) ;
     }
 
-    /**
-     * 모든 일정을 조회합니다.
-     * @return 일정 목록
-     */
     @GetMapping
-    public List<CalendarResponseDto> findAllCalendars(){
-        return calendarService.findAllCalendars();
+    public ResponseEntity<List<CalendarResponseDto>> findAllCalendars(){
+
+        return new ResponseEntity<>(calendarService.findAllCalendars(),HttpStatus.OK);
     }
 
-    /**
-     * 일정을 수정합니다.
-     * @param id 일정 ID
-     * @param calendarRequestDto 수정할 일정 정보
-     * @return 수정된 일정 정보
-     */
-    @PutMapping("/{id}")
-    public CalendarResponseDto reviseCalendar(@PathVariable int id, @RequestBody CalendarRequestDto calendarRequestDto){
-        return calendarService.updateCalendar(id, calendarRequestDto);
+    @GetMapping("/{userId}")
+    public ResponseEntity<List<CalendarResponseDto>> findCalendarsByUserId(
+            @PathVariable @PositiveOrZero(message = "음수나 0값은 입력하시면 안됩니다.") Long userId){
+
+        return new ResponseEntity<>(calendarService.findCalendarsByUserId(userId),HttpStatus.OK);
     }
 
-    /**
-     * 일정을 삭제합니다.
-     * @param id 삭제할 일정 ID
-     */
-    @DeleteMapping("/{id}")
-    public void deleteCalendar(@PathVariable int id,@RequestBody CalendarRequestDto calendarRequestDto){
-        calendarService.deleteCalendar(id,calendarRequestDto);
+    @GetMapping("/{userId}/{id}")
+    public ResponseEntity<List<CalendarResponseDto>> findAllCalendarsById(
+             @PathVariable @PositiveOrZero(message = "음수나 0값은 입력하시면 안됩니다.") Long id,
+             @PathVariable @PositiveOrZero(message = "음수나 0값은 입력하시면 안됩니다.") Long userId){
+
+        return new ResponseEntity<>(calendarService.findAllCalendarsById(id),HttpStatus.OK);
+    }
+
+    @PutMapping("/{userId}/{id}")
+    public ResponseEntity<CalendarResponseDto> updateCalendarByEmail(
+            @PathVariable @PositiveOrZero(message = "음수나 0값은 입력하시면 안됩니다.") Long id,
+            @PathVariable @PositiveOrZero(message = "음수나 0값은 입력하시면 안됩니다.") Long userId
+            , @Valid @RequestBody  CalendarRequestDto calendarRequestDto
+            ,@RequestParam @Email (message = "이메일 형식으로 입력하셔야 합니다.") String email){
+        return new ResponseEntity<>(calendarService.updateCalendar(id, calendarRequestDto,email),HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{userId}/{id}")
+    public ResponseEntity<String> deleteCalendar(
+            @RequestParam @Email(message = "이메일 형식으로 입력하셔야 합니다.")  String email,
+            @PathVariable @PositiveOrZero(message = "음수나 0값은 입력하시면 안됩니다.") Long id,
+            @PathVariable @PositiveOrZero(message = "음수나 0값은 입력하시면 안됩니다.") Long userId)
+            {
+            return new ResponseEntity<>(calendarService.deleteCalendar(id,email,userId),HttpStatus.OK);
     }
 }

@@ -1,12 +1,9 @@
 package com.example.calendarproject.entity;
 
 import com.example.calendarproject.dto.CalendarRequestDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
 /**
  * 일정 엔티티
@@ -16,21 +13,28 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @Getter
 @Setter
-public class Calendar {
-    private int id;
-    private String revisedDate;
-    private String name;
-    private String date;
-    private String password;
-    private String contents;
+public class CalendarEntity {
+    private long id;//primary key
+    private String task;//할일
+    private String password;//비밀번호
+    private String name;//작성자명
+    private String updatedAt;//작성일
+    private String createdAt;//수정일
+    private long userId;//field key
 
     /**
-     * DTO를 기반으로 Calendar 객체 생성
+     * CalendarRequestDto에서 입력된 정보 넣기
+     *
      */
-    public Calendar(CalendarRequestDto requestDto) {
+    public CalendarEntity(CalendarRequestDto requestDto) {
         this.name = requestDto.getName();
         this.password = requestDto.getPassword();
-        this.contents = requestDto.getContents();
+        this.task = requestDto.getTask();
+        this.userId=requestDto.getUserId();
     }
 
+    public CalendarEntity(long id, long userId) {
+        this.id=id;
+        this.userId=userId;
+    }
 }
