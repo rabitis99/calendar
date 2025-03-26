@@ -31,7 +31,7 @@ public class UserController {
 
         return new ResponseEntity<>(userService.deleteUser(id),HttpStatus.OK);
     }
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<UserResponseDto> updateUser(
              @PathVariable @PositiveOrZero(message ="음수나 0값은 입력하시면 안됩니다.")Long id,
              @RequestBody @Valid UserRequestDto userRequestDto){

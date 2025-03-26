@@ -27,7 +27,7 @@ public class PageRepositoryImpl implements PageRepository {
         int calculatedTotalPages = (int) Math.ceil((double) totalRecords / pageSize);
 
         // 데이터 조회 SQL
-        String sql = "SELECT name, contents, date FROM calendar ORDER BY id DESC LIMIT ? OFFSET ?";
+        String sql = "SELECT name, task, created_at FROM calendar ORDER BY id DESC LIMIT ? OFFSET ?";
         List<CalendarInPage> calendarInPageList = jdbcTemplate.query(
                 sql,
                 PageCalendarRowMapper(),
@@ -49,8 +49,8 @@ public class PageRepositoryImpl implements PageRepository {
     private RowMapper<CalendarInPage> PageCalendarRowMapper() {
         return (rs, rowNum) -> new CalendarInPage(
                 rs.getString("name"),
-                rs.getString("contents"),
-                rs.getString("creatd_at")
+                rs.getString("task"),
+                rs.getString("created_at")
         );
     }
 

@@ -65,7 +65,7 @@ public class CalendarRepositoryImpl implements CalendarRepository {
 
         if (existingPassword.isPresent() && password.equals(existingPassword.get())) {
             return jdbcTemplate.update(
-                    "UPDATE calendar inner join user on calendar.name=user.name SET contents = ?, calendar.updated_at = ? WHERE user.email = ?",
+                    "UPDATE calendar inner join user on calendar.name=user.name SET task = ?, calendar.updated_at = ? WHERE user.email = ?",
                     contents, revisedDate, email
             ) > 0;
         }
@@ -74,8 +74,8 @@ public class CalendarRepositoryImpl implements CalendarRepository {
 
     @Override
     public String deleteCalendar(long id, long userId ) {
-        boolean deleteCalendarBoolean =jdbcTemplate.update("DELETE FROM calendar WHERE id = ? AND userId = ?", id,userId) > 0;
-        if(deleteCalendarBoolean){
+        boolean deleteCalendarBoolean =jdbcTemplate.update("DELETE FROM calendar WHERE id = ? AND user_id = ?", id,userId) > 0;
+        if(!deleteCalendarBoolean){
             return "삭제가 됐습니다";
         }
         else {

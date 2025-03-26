@@ -82,7 +82,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public List<CalendarResponseDto> findAllCalendarsById(long id) {
-        if (!(calendarRepository.findCalendarById(id).contains(id))){
+        if (!(calendarRepository.checkId().contains(id))){
             
             throw new CustomException(ID_NOT_FOUND);
         }

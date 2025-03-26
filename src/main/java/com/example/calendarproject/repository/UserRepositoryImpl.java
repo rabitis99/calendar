@@ -40,14 +40,14 @@ public class UserRepositoryImpl implements UserRepository{
 
     @Override
     public UserEntity updateUser(UserEntity user, long id) {
-        jdbcTemplate.update("UPDATE SET name=?,update_at=?,email=? from user where id =?",
+        jdbcTemplate.update("UPDATE user SET name=?,updated_at=?,email=?  where id =?",
                 user.getName(),user.getUpdatedAt(),user.getEmail(),id);
         return jdbcTemplate.query("SELECT * FROM user where id=?",userRowMapper(),id).stream().findFirst().orElse(null);
     }
 
     @Override
     public String deleteUser(long id) {
-        if (jdbcTemplate.update("DELETE * FROM user where id=?",id)>0){
+        if (jdbcTemplate.update("DELETE FROM user where id=?",id)>0){
             return "유저가 삭제가 됐습니다.";
         }
         else{
@@ -69,7 +69,7 @@ public class UserRepositoryImpl implements UserRepository{
             user.setName(rs.getString("name"));
             user.setEmail(rs.getString("email"));
             user.setCreatedAt(rs.getString("created_at"));
-            user.setUpdatedAt(rs.getString("update_at"));
+            user.setUpdatedAt(rs.getString("updated_at"));
             return user;
         };
 
