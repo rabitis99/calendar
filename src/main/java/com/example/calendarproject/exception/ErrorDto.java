@@ -1,4 +1,4 @@
 package com.example.calendarproject.dto;
 
-public class PageRequestDto {
+public class ErrorDto {
 }
