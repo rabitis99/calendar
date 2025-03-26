@@ -9,6 +9,7 @@ CREATE TABLE User (
 CREATE TABLE Calendar (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     task TEXT NOT NULL,
+    name VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
     created_at DATE ,
     updated_at DATE ,
